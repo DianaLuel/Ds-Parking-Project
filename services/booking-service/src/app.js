@@ -11,4 +11,5 @@ app.get("/health", (req, res) => {
 
 app.use("/bookings", bookingsRoutes);
 
+
 export default app;

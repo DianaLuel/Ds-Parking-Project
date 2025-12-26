@@ -4,12 +4,13 @@ import {
   getBookingHandler,
   cancelBookingHandler
 } from "../controllers/bookings.controller.js";
+import { authenticate } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/", createBookingHandler);
-router.get("/:id", getBookingHandler);
-router.delete("/:id", cancelBookingHandler);
+router.post("/", authenticate,createBookingHandler);
+router.get("/:id", authenticate, getBookingHandler);
+router.delete("/:id", authenticate, cancelBookingHandler);
 
 
 

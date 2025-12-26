@@ -1,13 +1,16 @@
 import { createClient } from "redis";
-import crypto from "crypto";
 
 const client = createClient({
-  url: "redis://host.docker.internal:6379"
+  url: "redis://localhost:6379",  // or your working URL
 });
 
 client.connect();
 
-export function publish(eventName, payload) {
+// Add error handling (recommended)
+client.on("error", (err) => console.error("Redis Publisher Error:", err));
+
+// This is the function you need to export
+export async function publishEvent(eventName, payload) {
   const event = {
     eventId: crypto.randomUUID(),
     eventType: eventName,
@@ -15,6 +18,6 @@ export function publish(eventName, payload) {
     payload
   };
 
-  client.publish(eventName, JSON.stringify(event));
-  console.log(`Published event: ${eventName} {id: ${event.eventId}}`);
+  await client.publish(eventName, JSON.stringify(event));
+  console.log(`Published event: ${eventName} (id: ${event.eventId})`);
 }
