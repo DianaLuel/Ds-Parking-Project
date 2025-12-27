@@ -1,0 +1,63 @@
+http:
+  port: 8080
+
+admin:
+  port: 9876
+  host: localhost
+
+# === API ENDPOINTS (What paths the gateway listens for) ===
+apiEndpoints:
+  auth:
+    paths: '/auth/*'          # Matches /auth/register, /auth/login
+  bookings:
+    paths: '/bookings/*'      # Matches /bookings, /bookings/my, /bookings/1
+  parking:
+    paths: '/parking/*'       # Matches /parking/lots, /parking/lots/lot1
+
+# === SERVICE ENDPOINTS (Where to forward the requests) ===
+serviceEndpoints:
+  auth:
+    url: 'http://127.0.0.1:3000'   # Auth Service port
+  bookings:
+    url: 'http://127.0.0.1:3001'   # Booking Service port  <--- MUST be "bookings" (exact match)
+  parking:
+    url: 'http://127.0.0.1:3002'   # Parking Service port
+
+# === POLICIES (What to do with matched requests) ===
+policies:
+  - proxy                       # Only proxy policy needed
+
+# === PIPELINES (Connect endpoints to services) ===
+pipelines:
+  auth-pipeline:
+    apiEndpoints:
+      - auth                    # Uses the "auth" apiEndpoint defined above
+    policies:
+      - proxy:
+          - action:
+              serviceEndpoint: auth   # Forwards to auth serviceEndpoint
+
+  bookings-pipeline:           # Name can be anything, but must exist
+    apiEndpoints:
+      - bookings               # MUST match the name in apiEndpoints ("bookings")
+    policies:
+      - proxy:
+          - action:
+              serviceEndpoint: bookings  # MUST match the name in serviceEndpoints ("bookings")
+
+  parking-pipeline:
+    apiEndpoints:
+      - parking
+    policies:
+      - proxy:
+          - action:
+              serviceEndpoint: parking
+
+# === PROBLEM HIGHLIGHTED ===
+# If any of these names don't match EXACTLY:
+# - apiEndpoints name: bookings
+# - serviceEndpoints name: bookings
+# - pipelines apiEndpoints: - bookings
+# - pipelines serviceEndpoint: bookings
+# → The route will NOT be found → 404
+# Your earlier versions likely had "booking" (singular) in one place → mismatch → 404 for /bookings

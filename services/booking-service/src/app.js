@@ -1,15 +1,12 @@
 import express from "express";
-import bookingsRoutes from "./routes/bookings.routes.js";
+import bookingsRouter from "./routes/bookings.routes.js";
 
 const app = express();
+
+// CRITICAL: Parse JSON bodies — MUST be before routes
 app.use(express.json());
 
-app.get("/health", (req, res) => {
-  res.json({ status: "Booking Service is running" });
-});
-
-
-app.use("/bookings", bookingsRoutes);
-
+// Mount the bookings routes
+app.use("/bookings", bookingsRouter);
 
 export default app;

@@ -64,37 +64,56 @@ export async function getBookingHandler(req, res) {
 }
 
 export async function cancelBookingHandler(req, res) {
-  const { id } = req.params;
-  const userId = req.user.userId;  // Only allow user's own bookings
+  const { id } = req.params;               // booking ID from URL
+  const userId = req.user.userId;          // from JWT (user who is logged in)
 
   try {
+    // 1. Check if the booking exists and belongs to this user
     const result = await pool.query(
-      `UPDATE bookings
-       SET status = 'cancelled'
-       WHERE id = $1 AND user_id = $2
-       RETURNING *`,
+      "SELECT * FROM bookings WHERE id = $1 AND user_id = $2",
       [id, userId]
     );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Booking not found" });
+      return res.status(404).json({ message: "Booking not found or not yours" });
     }
 
     const booking = result.rows[0];
 
-    // Publish new event
+    // 2. Mark as cancelled
+    await pool.query(
+      "UPDATE bookings SET status = 'cancelled' WHERE id = $1",
+      [id]
+    );
+
+    // 3. Publish cancellation event
     await publishEvent("booking.cancelled", {
-      bookingId: booking.id,
+      bookingId: id,
       userId,
       lotId: booking.lot_id,
       spotId: booking.spot_id,
-      timestamp: new Date().toISOString(),
-      reason: "user_cancel"
+      timestamp: new Date().toISOString()
     });
 
-    res.json({ message: "Booking cancelled", booking });
+    res.json({ message: "Booking cancelled successfully" });
   } catch (err) {
-    console.error("Cancel booking error:", err);
-    res.status(500).json({ error: "Internal server error" });
+    console.error("Cancel error:", err);
+    res.status(500).json({ error: "Failed to cancel booking" });
+  }
+}
+
+export async function getMyBookingsHandler(req, res) {
+  const userId = req.user.userId;
+
+  try {
+    const result = await pool.query(
+      "SELECT * FROM bookings WHERE user_id = $1 ORDER BY created_at DESC",
+      [userId]
+    );
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Get my bookings error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 }
