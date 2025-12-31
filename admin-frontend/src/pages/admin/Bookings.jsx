@@ -4,6 +4,7 @@ import adminApi from "../../api/adminApi";
 import { adminAuth } from "../../auth/adminAuth";
 import Toast from "../../components/admin/Toast";
 import ConfirmModal from "../../components/admin/ConfirmModal";
+import Sidebar from "../../components/admin/Sidebar";
 
 const AdminBookings = () => {
   const navigate = useNavigate();
@@ -60,84 +61,72 @@ const AdminBookings = () => {
     }
   };
 
-  const handleLogout = () => {
-    adminAuth.logout();
-    window.location.href = "/admin/login";
-  };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lg">Loading...</div>
+      <div className="min-h-screen dark-bg flex items-center justify-center">
+        <div className="flex flex-col items-center">
+          <div className="w-12 h-12 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin mb-4"></div>
+          <p className="text-gray-400 font-medium">Loading bookings...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => navigate("/admin/dashboard")}
-                className="text-gray-600 hover:text-gray-900"
-                title="Back to Dashboard"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                  />
-                </svg>
-              </button>
-              <span className="text-xl font-bold text-gray-900">
-                All Bookings
-              </span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700">
-                {adminAuth.getUser()?.email}
-              </span>
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
-              >
-                Logout
-              </button>
+    <div className="min-h-screen dark-bg flex">
+      <Sidebar />
+      
+      <div className="flex-1 ml-64">
+        {/* Top Navbar */}
+        <nav className="dark-navbar shadow-lg sticky top-0 z-20">
+          <div className="px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 gradient-accent rounded-lg flex items-center justify-center shadow-md">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                </div>
+                <h1 className="text-xl font-bold text-white">All Bookings</h1>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-3 px-3 py-2 rounded-lg bg-slate-800/50 border border-slate-700">
+                  <div className="w-8 h-8 rounded-full gradient-accent flex items-center justify-center shadow-md">
+                    <span className="text-white font-semibold text-xs">
+                      {adminAuth.getUser()?.email?.charAt(0).toUpperCase() || 'A'}
+                    </span>
+                  </div>
+                  <span className="text-sm font-medium text-gray-200 hidden md:block">
+                    {adminAuth.getUser()?.email || 'Admin'}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </nav>
+        </nav>
 
-      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <div className="bg-white shadow overflow-hidden sm:rounded-md">
-            <div className="px-4 py-5 sm:px-6">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">
-                All Bookings
-              </h3>
-              <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                Manage all user bookings
-              </p>
+        <main className="p-6">
+          {error && (
+            <div className="mb-6 bg-red-900/20 border-l-4 border-red-500 text-red-300 px-4 py-3 rounded-r-lg">
+              <p className="text-sm font-medium">{error}</p>
             </div>
-            {error && (
-              <div className="px-4 py-3 bg-red-50 border border-red-200 text-red-700">
-                {error}
-              </div>
-            )}
-            <ul className="divide-y divide-gray-200">
+          )}
+          
+          <div className="dark-card rounded-xl overflow-hidden">
+            <div className="px-6 py-5 border-b border-slate-700">
+              <h2 className="text-xl font-semibold text-white">Booking Management</h2>
+              <p className="mt-1 text-sm text-gray-400">View and manage all user bookings</p>
+            </div>
+            
+            <div className="divide-y divide-slate-700">
               {bookings.length === 0 ? (
-                <li className="px-4 py-5 text-center text-gray-500">
-                  No bookings found
-                </li>
+                <div className="px-6 py-12 text-center">
+                  <svg className="mx-auto h-12 w-12 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                  <p className="mt-4 text-sm text-gray-400 font-medium">No bookings found</p>
+                </div>
               ) : (
                 bookings.map((booking, idx) => {
                   const isCancelled =
@@ -149,89 +138,98 @@ const AdminBookings = () => {
                   const isClickable = !isCancelled && !isPending;
 
                   return (
-                    <li
+                    <div
                       key={booking.id}
-                      className={`px-4 py-4 sm:px-6 ${
-                        isClickable ? "cursor-pointer hover:bg-gray-50" : ""
+                      className={`px-6 py-5 transition-all duration-300 rounded-lg ${
+                        isClickable ? "cursor-pointer hover:bg-slate-800/50 hover:shadow-md hover:-translate-y-0.5" : ""
                       }`}
                       onClick={() =>
                         handleBookingClick(booking.id, booking.status)
                       }
                     >
                       <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center">
-                            <p
-                              className={`text-sm font-medium truncate ${
-                                isClickable
-                                  ? "text-indigo-600 hover:text-indigo-800"
-                                  : "text-gray-900"
-                              }`}
-                            >
-                              {idx + 1}. Booking #{booking.id}
-                              {isClickable && (
-                                <span className="ml-2 text-xs text-gray-400">
-                                  (Click for details)
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center space-x-3 mb-3">
+                            <div className="flex-shrink-0">
+                              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                                isCancelled ? 'bg-red-900/30 border border-red-700' : isPending ? 'bg-yellow-900/30 border border-yellow-700' : 'bg-green-900/30 border border-green-700'
+                              }`}>
+                                <svg className={`w-5 h-5 ${
+                                  isCancelled ? 'text-red-400' : isPending ? 'text-yellow-400' : 'text-green-400'
+                                }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                </svg>
+                              </div>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className={`text-base font-semibold ${
+                                isClickable ? "text-indigo-400 hover:text-indigo-300" : "text-white"
+                              }`}>
+                                Booking #{booking.id}
+                                {isClickable && (
+                                  <span className="ml-2 text-xs font-normal text-gray-500">
+                                    Click to view details
+                                  </span>
+                                )}
+                              </p>
+                              <div className="mt-1 flex items-center space-x-2">
+                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                  isCancelled
+                                    ? "bg-red-900/30 text-red-300 border border-red-700"
+                                    : isPending
+                                    ? "bg-yellow-900/30 text-yellow-300 border border-yellow-700"
+                                    : "bg-green-900/30 text-green-300 border border-green-700"
+                                }`}>
+                                  {booking.status}
                                 </span>
-                              )}
-                            </p>
-                            <span
-                              className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                isCancelled
-                                  ? "bg-red-100 text-red-800"
-                                  : isPending
-                                  ? "bg-yellow-100 text-yellow-800"
-                                  : "bg-green-100 text-green-800"
-                              }`}
-                            >
-                              {booking.status}
-                            </span>
+                              </div>
+                            </div>
                           </div>
-                          <div className="mt-2 sm:flex sm:justify-between">
-                            <div className="sm:flex">
-                              <p className="flex items-center text-sm text-gray-500">
-                                User:{" "}
+                          <div className="ml-13 grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+                            <div>
+                              <p className="text-gray-400 font-medium">User</p>
+                              <p className="text-white mt-0.5">
                                 {booking.user?.email ||
                                   booking.user?.username ||
                                   `ID: ${booking.user_id}`}
                               </p>
-                              <p className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
-                                Lot: {booking.lot_id}
-                              </p>
-                              {booking.spot_id && (
-                                <p className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
-                                  Spot: {booking.spot_id}
-                                </p>
-                              )}
                             </div>
-                            <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                              <p>
-                                {new Date(booking.created_at).toLocaleString()}
+                            <div>
+                              <p className="text-gray-400 font-medium">Location</p>
+                              <p className="text-white mt-0.5">
+                                Lot {booking.lot_id}
+                                {booking.spot_id && ` • Spot ${booking.spot_id}`}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-gray-400 font-medium">Created</p>
+                              <p className="text-white mt-0.5">
+                                {new Date(booking.created_at).toLocaleDateString()}
                               </p>
                             </div>
                           </div>
                         </div>
                         <div
-                          className="ml-4"
+                          className="ml-4 flex-shrink-0"
                           onClick={(e) => e.stopPropagation()}
                         >
                           {!isCancelled && (
                             <button
                               onClick={() => handleCancelClick(booking.id)}
-                              className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 text-sm"
+                              className="btn-danger text-sm px-4 py-2"
                             >
                               Cancel
                             </button>
                           )}
                         </div>
                       </div>
-                    </li>
+                    </div>
                   );
                 })
               )}
-            </ul>
+            </div>
           </div>
-        </div>
+        </main>
       </div>
 
       {toast && (

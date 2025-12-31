@@ -99,27 +99,40 @@ const MyBookings = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">My Bookings</h1>
+          <h1 className="text-3xl font-bold text-gray-200">My Bookings</h1>
 
           <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
             <form
               onSubmit={handleSearchSubmit}
-              className="flex items-center gap-2"
+              className="flex items-end gap-2"
             >
-              <input
-                type="text"
-                placeholder="Search by Booking ID"
-                value={searchId}
-                onChange={(e) => setSearchId(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
-              />
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-              >
+              <div className="flex-1">
+                <label htmlFor="search-booking" className="flex items-center text-sm font-semibold text-gray-300 mb-2">
+                  <svg className="h-5 w-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  Search Booking
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                  <input
+                    id="search-booking"
+                    type="text"
+                    placeholder="Enter Booking ID"
+                    value={searchId}
+                    onChange={(e) => setSearchId(e.target.value)}
+                    className="w-full pl-11 pr-4 py-3 border border-gray-600 rounded-md bg-slate-700 text-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm transition-all duration-200"
+                  />
+                </div>
+              </div>
+              <button type="submit" className="btn-primary px-6 py-3">
                 Search
               </button>
             </form>
@@ -134,87 +147,87 @@ const MyBookings = () => {
         </div>
 
         {filteredBookings.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-12 text-center">
+          <div className="app-card rounded-lg p-12 text-center">
             {bookings.length === 0 ? (
               <>
-                <p className="text-gray-500 text-xl mb-4">
+                <p className="text-muted text-xl mb-4">
                   You have no bookings yet
                 </p>
                 <Link
                   to="/bookings/new"
-                  className="text-primary-600 hover:text-primary-700 font-medium"
+                  className="link-accent hover:underline font-medium"
                 >
                   Create your first booking →
                 </Link>
               </>
             ) : (
-              <p className="text-gray-500 text-xl">
+              <p className="text-muted text-xl">
                 No bookings match the search ID.
               </p>
             )}
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+          <div className="app-card rounded-lg overflow-hidden">
+            <table className="min-w-full divide-y divide-gray-700">
+              <thead className="bg-slate-800">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                     #
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                     Booking ID
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                     Lot
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                     Spot
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                     Created
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-transparent divide-y divide-gray-700">
                 {filteredBookings.map((booking, idx) => (
-                  <tr key={booking.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  <tr key={booking.id} className="hover:bg-slate-800">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-200">
                       {idx + 1}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-200">
                       {booking.id}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted">
                       {booking.lot_id || booking.lotId
                         ? `Lot ${booking.lot_id || booking.lotId}`
                         : "N/A"}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted">
                       {booking.spot_id || booking.spotId
                         ? `Spot ${booking.spot_id || booking.spotId}`
                         : "N/A"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
-                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full border ${
                           booking.status === "active" ||
                           booking.status === "pending"
-                            ? "bg-green-100 text-green-800"
+                            ? "bg-green-900/30 text-green-300 border-green-700"
                             : booking.status === "cancelled"
-                            ? "bg-red-100 text-red-800"
-                            : "bg-yellow-100 text-yellow-800"
+                            ? "bg-rose-900/30 text-rose-300 border-rose-700"
+                            : "bg-yellow-900/30 text-yellow-300 border-yellow-700"
                         }`}
                       >
                         {booking.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted">
                       {booking.created_at || booking.createdAt
                         ? new Date(
                             booking.created_at || booking.createdAt
@@ -230,7 +243,7 @@ const MyBookings = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-4">
                       <Link
                         to={`/bookings/${booking.id}`}
-                        className="text-primary-600 hover:text-primary-900"
+                        className="text-primary-600 hover:underline"
                       >
                         View
                       </Link>
@@ -239,7 +252,7 @@ const MyBookings = () => {
                           type="button"
                           onClick={() => handleCancelClick(booking.id)}
                           disabled={cancellingId === booking.id}
-                          className="text-red-600 hover:text-red-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="text-rose-600 hover:text-rose-700 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {cancellingId === booking.id
                             ? "Cancelling..."
@@ -266,8 +279,8 @@ const MyBookings = () => {
 
       {/* Cancel Confirmation Modal */}
       {showCancelModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+          <div className="notification-surface rounded-lg shadow-xl max-w-md w-full mx-4">
             <div className="p-6">
               <div className="flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full mb-4">
                 <svg
@@ -284,17 +297,17 @@ const MyBookings = () => {
                   />
                 </svg>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 text-center mb-2">
+              <h3 className="text-lg font-semibold text-gray-200 text-center mb-2">
                 Cancel Booking?
               </h3>
-              <p className="text-sm text-gray-500 text-center mb-6">
+              <p className="text-sm text-muted text-center mb-6">
                 Are you sure you want to cancel this booking? This action cannot
                 be undone.
               </p>
               <div className="flex gap-3">
                 <button
                   onClick={handleCancelModalClose}
-                  className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
+                  className="flex-1 px-4 py-2 text-sm font-medium text-gray-200 bg-slate-700 rounded-md hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
                 >
                   Keep Booking
                 </button>
