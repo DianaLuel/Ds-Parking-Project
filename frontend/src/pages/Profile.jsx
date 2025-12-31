@@ -31,6 +31,7 @@ const Profile = () => {
               userId: payload.userId,
               username: payload.username,
               email: payload.email,
+              role: payload.role,
             });
           } catch (e) {
             console.error('Error decoding token:', e);
@@ -76,6 +77,16 @@ const Profile = () => {
                 <h2 className="text-2xl font-bold text-gray-900">{userInfo?.username || 'User'}</h2>
                 <p className="text-gray-600 mt-2">{userInfo?.email || 'No email'}</p>
                 <p className="text-sm text-gray-500 mt-1">User ID: {userInfo?.userId || 'N/A'}</p>
+                {userInfo?.role === 'ADMIN' && (
+                  <div className="mt-4">
+                    <button
+                      onClick={() => navigate('/admin/dashboard')}
+                      className="w-full px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+                    >
+                      Access Admin Panel
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="mt-6 pt-6 border-t border-gray-200">

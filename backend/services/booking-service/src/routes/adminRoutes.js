@@ -4,8 +4,7 @@ import express from "express";
 import authenticate from "../middleware/authenticate.js";   // ← already fixed
 import isAdmin from "../middleware/isAdmin.js";
 import { pool } from "../db/index.js";
-
-// REMOVED: import publishEvent from "../pubsub/publisher.js";  ← Comment or delete this line
+import { publishEvent } from "../messaging/eventPublisher.js";  // ← Add this import
 
 const router = express.Router();
 
@@ -34,11 +33,9 @@ router.delete("/bookings/:id", authenticate, isAdmin, async (req, res) => {
 
     await pool.query("UPDATE bookings SET status = 'CANCELLED' WHERE id = $1", [id]);
 
-    // TODO: Publish events when pubsub is fixed
-    // publishEvent("booking.cancelled", { ... });
-    // publishEvent("parking.spot.released", { ... });
-
-    console.log(`Admin cancelled booking ${id} – events would be published here`);
+    // Publish events
+    publishEvent("booking.cancelled", { bookingId: id });
+    publishEvent("parking.spot.released", { bookingId: id, lotId: booking.lot_id, spotId: booking.spot_id });
 
     res.json({ message: "Booking cancelled by admin" });
   } catch (err) {

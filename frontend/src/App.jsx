@@ -10,6 +10,9 @@ import Sidebar from './components/Sidebar';
 import ProtectedRoute from './components/ProtectedRoute';
 import NotificationModal from './components/NotificationModal';
 
+// Admin Components
+import AdminRoutes from './admin/router/AdminRoutes';
+
 // Pages
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -28,8 +31,8 @@ function AppContent() {
   const location = useLocation();
   const { notification, showNotification, hideNotification } = useNotification();
   
-  // Only show sidebar when authenticated and not on login/register pages
-  const showSidebar = !loading && isAuthenticated && !['/login', '/register'].includes(location.pathname);
+  // Only show sidebar when authenticated and not on login/register pages and not admin pages
+  const showSidebar = !loading && isAuthenticated && !['/login', '/register'].includes(location.pathname) && !location.pathname.startsWith('/admin');
 
   useEffect(() => {
     // Initialize socket connection only if authenticated
@@ -52,9 +55,12 @@ function AppContent() {
     };
   }, [showNotification]);
 
+  // Check if current path is admin
+  const isAdminPath = location.pathname.startsWith('/admin');
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      {!isAdminPath && <Navbar />}
       <div className="flex pt-16">
         {showSidebar && <Sidebar />}
         <main className={`flex-1 transition-all duration-300 ${
@@ -106,9 +112,11 @@ function AppContent() {
                 </ProtectedRoute>
               }
             />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </main>
+            {/* Admin Routes */}
+            <Route path="/admin/*" element={<AdminRoutes />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
       </div>
       {notification && (
         <NotificationModal
