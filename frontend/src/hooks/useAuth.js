@@ -80,6 +80,7 @@ export const useAuth = () => {
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('adminToken');
     emitAuthChanged();
   };
 

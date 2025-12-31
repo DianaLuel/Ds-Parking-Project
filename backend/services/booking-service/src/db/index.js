@@ -6,5 +6,5 @@ export const pool = new Pool({
   port: 5432,
   user: "postgres",
   password: "pgforcss",  // Match what you set in Docker
-  database: "parking_booking_db"
+  database: "booking_db"
 });

@@ -32,6 +32,7 @@ const Profile = () => {
               userId: payload.userId,
               username: payload.username,
               email: payload.email,
+              role: payload.role,
             });
           } catch (e) {
             console.error("Error decoding token:", e);

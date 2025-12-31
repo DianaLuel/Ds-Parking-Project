@@ -7,14 +7,14 @@ import { handleSpotReserved } from "./handlers/spotReserved.handler.js";
 
 const app = express();
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:3000", "http://localhost:5173"],
+  origin: ["http://localhost:5173", "http://localhost:3000", "http://localhost:8080"],
   credentials: true
 }));
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: ["http://localhost:5173", "http://localhost:3000", "http://localhost:5173"],
+    origin: ["http://localhost:5173", "http://localhost:3000", "http://localhost:8080"],
     methods: ["GET", "POST"],
     credentials: true
   },

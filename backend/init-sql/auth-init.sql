@@ -8,3 +8,8 @@ CREATE TABLE IF NOT EXISTS users (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Create default admin user
+INSERT INTO users (username, email, password_hash, role)
+VALUES ('admin', 'admin@parking.com', '$2b$04$atDfrL.LZMwDT27cFMmi.duj9fyq91UpfUZvaaeBVlbvFwi6aiamZm', 'ADMIN')
+ON CONFLICT (email) DO NOTHING;

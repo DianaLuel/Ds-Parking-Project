@@ -1,43 +1,78 @@
-version: "3.9"
-
 services:
+  # =========================
+  # Redis (Pub/Sub)
+  # =========================
   redis:
     image: redis:7
+    container_name: redis
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+  # =========================
+  # Databases
+  # =========================
   booking-db:
-    image: postgres:latest
+    image: postgres:15
+    container_name: booking-db
     environment:
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: pgforcss
-      POSTGRES_DB: parking_booking_db
+      POSTGRES_DB: booking_db
     ports:
       - "5435:5432"
     volumes:
       - ./backend/init-sql/booking-init.sql:/docker-entrypoint-initdb.d/booking-init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d booking_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   parking-db:
-    image: postgres:latest
+    image: postgres:15
+    container_name: parking-db
     environment:
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: pgforcss
       POSTGRES_DB: parking_db
     ports:
       - "5433:5432"
     volumes:
       - ./backend/init-sql/parking-init.sql:/docker-entrypoint-initdb.d/parking-init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d parking_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   auth-db:
-    image: postgres:latest
+    image: postgres:15
+    container_name: auth-db
     environment:
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: pgforcss
       POSTGRES_DB: auth_db
     ports:
       - "5434:5432"
     volumes:
       - ./backend/init-sql/auth-init.sql:/docker-entrypoint-initdb.d/auth-init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d auth_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+  # =========================
+  # Backend Services
+  # =========================
   auth-service:
     build: ./backend/services/auth-service
+    container_name: auth-service
     ports:
       - "3000:3000"
     depends_on:
@@ -48,6 +83,7 @@ services:
 
   booking-service:
     build: ./backend/services/booking-service
+    container_name: booking-service
     ports:
       - "3001:3001"
     depends_on:
@@ -58,6 +94,7 @@ services:
 
   parking-service:
     build: ./backend/services/parking-service
+    container_name: parking-service
     ports:
       - "3002:3002"
     depends_on:
@@ -68,24 +105,37 @@ services:
 
   notification-service:
     build: ./backend/services/notification-service
+    container_name: notification-service
     ports:
       - "4000:4000"
     depends_on:
       - redis
+    environment:
+      PORT: 4000
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
 
+  # =========================
+  # API Gateway
+  # =========================
   api-gateway:
     build: ./backend/services/api-gateway
-    ports:
-      - "8080:8080"
+    container_name: api-gateway
     depends_on:
       - auth-service
       - booking-service
       - parking-service
+    environment:
+      PORT: 8080
 
+  # =========================
+  # Frontend (User UI)
+  # =========================
   frontend:
     build: ./frontend
+    container_name: frontend
     ports:
-      - "5173:80"
+      - "8080:80"
     depends_on:
       - api-gateway
     environment:

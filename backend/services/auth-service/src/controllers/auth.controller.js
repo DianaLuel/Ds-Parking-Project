@@ -118,7 +118,7 @@ export async function login(req, res) {
   { expiresIn: '1h' }  // Good practice: short expiry
 );
 
-    res.json({ token });
+    res.json({ token, role: user.role });
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ message: "Internal server error" });

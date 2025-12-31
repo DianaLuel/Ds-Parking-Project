@@ -10,6 +10,9 @@ import Sidebar from "./components/Sidebar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotificationModal from "./components/NotificationModal";
 
+// Admin Components
+import AdminRoutes from './admin/router/AdminRoutes';
+
 // Pages
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -56,6 +59,9 @@ function AppContent() {
       // This allows the socket to stay connected for other components
     };
   }, [showNotification]);
+
+  // Check if current path is admin
+  const isAdminPath = location.pathname.startsWith('/admin');
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg)' }}>
