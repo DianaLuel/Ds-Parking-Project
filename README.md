@@ -1,4 +1,4 @@
-<img width="1321" height="615" alt="image" src="https://github.com/user-attachments/assets/c924bde1-a168-48f5-b3cd-db1e11d499f3" />
+<img width="1273" height="618" alt="image" src="https://github.com/user-attachments/assets/0c522b00-f5da-410c-a849-771d46c17e85" />
 
 # 🚗 Distributed Smart Parking Booking System
 
