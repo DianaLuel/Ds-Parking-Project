@@ -96,7 +96,7 @@ The system follows a **distributed microservices architecture**:
 
 ### Step 1: Clone the Repository
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/etsuamb/Ds-Parking-Project.git
 cd <your-project-folder>
 ```
 ### Step 2: Clone the Repository
